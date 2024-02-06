@@ -19,7 +19,7 @@ def nasa_apod_foto(token):
 
 def main():
     load_dotenv()
-    token = os.environ['API_TOKEN']
+    token = os.environ['API_TOKEN_NASA']
     try:
         nasa_apod_foto(token)
     except requests.exceptions.HTTPError:
