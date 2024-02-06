@@ -5,23 +5,15 @@ import random
 import argparse
 
 
-def args_input(path, file_name):
-    list_files = [os.path.join(address, name).replace('//', '/')
+def get_args_input(path, file_name):
+    names_files = [os.path.join(address, name).replace('//', '/')
                   for address, dirs, files in os.walk(path) for name in files]
-    if not file_name is None:
+    if file_name:
         return f'{path}\{file_name}'
-    return f'{random.choice(list_files)}'
+    return f'{random.choice(names_files)}'
 
 
 def main():
-    load_dotenv()
-    bot = telegram.Bot(token=os.environ['BOT_TOKEN'])
-    chat_id = bot.get_updates()[-1].message.chat_id
-    file_path = args_input(path, file_name)
-    bot.send_document(chat_id=chat_id, document=open(file_path, 'rb'))
-
-
-if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Скрипт для публикаций фотографий в телеграмм'
     )
@@ -30,7 +22,16 @@ if __name__ == '__main__':
     args = parser.parse_args()
     path = args.path
     file_name = args.image_name
+    load_dotenv()
+    bot = telegram.Bot(token=os.environ['BOT_TOKEN'])
+    chat_id = bot.get_updates()[-1].message.chat_id
+    file_path = get_args_input(path, file_name)
     try:
-        main()
+        with open(file_path, 'rb') as file:
+            bot.send_document(chat_id=chat_id, document=file)
     except telegram.error.NetworkError:
         print('Программа завершена')
+
+
+if __name__ == '__main__':
+    main()
