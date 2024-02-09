@@ -3,7 +3,7 @@ import argparse
 from auxiliary_functions import image_download_with_params
 
 
-def fetch_spacex_last_launch(launch_id='latest'):
+def fetch_spacex_last_launch(launch_id):
     url_api = 'https://api.spacexdata.com/v5/launches/{}'
     complite_url = url_api.format(launch_id)
     response = requests.get(complite_url)
@@ -21,14 +21,10 @@ def main():
     parser = argparse.ArgumentParser(
         description='Скрипт для скачивания фотографий запусков SpaceX'
     )
-    parser.add_argument('--launch_id', type=str, help='launch id')
+    parser.add_argument('--launch_id', default='latest', type=str, help='launch id')
     args = parser.parse_args()
-    launch = args.launch_id
     try:
-        if not args.launch_id is None:
-            fetch_spacex_last_launch(launch)
-        else:
-            fetch_spacex_last_launch()
+        fetch_spacex_last_launch(args.launch_id)
     except requests.exceptions.HTTPError:
         print('Программа завершена')
 
