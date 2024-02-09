@@ -5,14 +5,6 @@ import random
 import argparse
 
 
-def get_args_input(path, file_name):
-    names_files = [os.path.join(address, name).replace('//', '/')
-                  for address, dirs, files in os.walk(path) for name in files]
-    if file_name:
-        return f'{path}\{file_name}'
-    return f'{random.choice(names_files)}'
-
-
 def main():
     parser = argparse.ArgumentParser(
         description='Скрипт для публикаций фотографий в телеграмм'
@@ -22,10 +14,15 @@ def main():
     args = parser.parse_args()
     path = args.path
     file_name = args.image_name
+    if file_name:
+        file_path = f'{path}\{file_name}'
+    else:
+        names_files = [os.path.join(address, name).replace('//', '/')
+                                         for address, dirs, files in os.walk(path) for name in files]
+        file_path = f'{random.choice(names_files)}'
     load_dotenv()
     bot = telegram.Bot(token=os.environ['BOT_TOKEN'])
     chat_id = bot.get_updates()[-1].message.chat_id
-    file_path = get_args_input(path, file_name)
     try:
         with open(file_path, 'rb') as file:
             bot.send_document(chat_id=chat_id, document=file)

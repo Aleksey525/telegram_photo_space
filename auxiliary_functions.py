@@ -11,16 +11,7 @@ def get_file_name(file_link):
     return file_name
 
 
-def image_download(url, path):
-    response = requests.get(url)
-    response.raise_for_status()
-    os.makedirs(path, exist_ok=True)
-    path_template = f'{path}/{get_file_name(url)}'
-    with open(path_template, 'wb') as file:
-        file.write(response.content)
-
-
-def image_download_with_params(url, path, params):
+def image_download_with_params(url, path, params=None):
     response = requests.get(url, params=params)
     response.raise_for_status()
     os.makedirs(path, exist_ok=True)

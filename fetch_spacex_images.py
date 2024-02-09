@@ -1,6 +1,6 @@
 import requests
 import argparse
-from auxiliary_functions import image_download
+from auxiliary_functions import image_download_with_params
 
 
 def fetch_spacex_last_launch(launch_id='latest'):
@@ -14,7 +14,7 @@ def fetch_spacex_last_launch(launch_id='latest'):
         print('Фотографий последнего запуска не обнаружено, попробуйте поиск по id')
     else:
         for link in links:
-            image_download(link, directory)
+            image_download_with_params(link, directory)
 
 
 def main():
@@ -23,10 +23,10 @@ def main():
     )
     parser.add_argument('--launch_id', type=str, help='launch id')
     args = parser.parse_args()
-    print(args.launch_id)
+    launch = args.launch_id
     try:
         if not args.launch_id is None:
-            fetch_spacex_last_launch(args.launch_id)
+            fetch_spacex_last_launch(launch)
         else:
             fetch_spacex_last_launch()
     except requests.exceptions.HTTPError:
